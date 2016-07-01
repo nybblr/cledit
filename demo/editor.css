@@ -117,7 +117,8 @@ pre:focus {
 }
 
 .blockquote {
-    font-weight: 300;
+    font-weight: bold;
+    color: #009bc9;
 }
 
 .h1,
@@ -130,6 +131,7 @@ pre:focus {
     color: #009bc9;
 }
 
+.token .cl-li,
 .token .cl-hash {
   font-weight: bold;
 }
@@ -165,6 +167,11 @@ pre:focus {
 
 .cl-hash {
     color: #009bc9;
+}
+
+.cl-gt {
+  color: #214d5d;
+  font-weight: bold;
 }
 
 .cl,
@@ -247,12 +254,14 @@ pre:focus {
     color: #009bc9;
 }
 
-.link {
+.link,
+.linkref{
   color: #616161;
 }
 
 .img .cl-underlined-text,
 .link .cl-underlined-text,
+.linkref .cl-underlined-text,
 .url {
     color: #cbcbcb;
     text-decoration: none;

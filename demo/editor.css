@@ -25,6 +25,10 @@ body {
     word-break: normal;
 }
 
+.content.outline .cledit-section :not(:first-child) {
+  display: none;
+}
+
 * {
     line-height: 1.5;
 }

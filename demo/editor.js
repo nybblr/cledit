@@ -32,7 +32,6 @@ editor.init({
 })
 
 var prev;
-
 document.addEventListener('selectionchange', event => {
   var sel = document.getSelection();
   var curr = sel.anchorNode &&
@@ -42,3 +41,37 @@ document.addEventListener('selectionchange', event => {
   if (curr) { curr.classList.add('active'); }
   prev = curr;
 });
+
+// var body = document.body;
+// var div = document.createElement('div');
+// div.classList.add('selection');
+// body.appendChild(div);
+// document.addEventListener('selectionchange', event => {
+//   var sel = document.getSelection();
+//
+//   if (!sel.rangeCount || sel.type === 'None') {
+//     div.classList.remove('caret', 'range');
+//     div.classList.add('none');
+//     return;
+//   }
+//
+//   var range = sel.getRangeAt(0);
+//   var rect = range.getBoundingClientRect();
+//
+//   var { top, left, width, height } = rect;
+//   top += window.scrollY;
+//   left += window.scrollX;
+//
+//   switch (sel.type) {
+//     case 'Range':
+//       div.style = `top: ${top}px; left: ${left}px; width: ${width}px; height: ${height}px;`
+//       div.classList.remove('caret', 'none');
+//       div.classList.add('range');
+//       break;
+//     case 'Caret':
+//       div.style = `top: ${top}px; left: ${left - 1}px; height: ${height}px;`
+//       div.classList.remove('range', 'none');
+//       div.classList.add('caret');
+//       break;
+//   }
+// });

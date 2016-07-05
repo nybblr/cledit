@@ -310,6 +310,10 @@
           pattern: /(\[)[^\]]*/,
           lookbehind: true
         },
+        'cl cl-link-url': {
+          pattern: /(\()[^\]\)'‘\s]+/,
+          lookbehind: true
+        },
         'cl cl-title': /['‘][^'’]*['’]|["“][^"”]*["”](?=\)$)/
       }
     }

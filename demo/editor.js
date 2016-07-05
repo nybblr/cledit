@@ -30,3 +30,15 @@ editor.init({
     return sectionList
   }
 })
+
+var prev;
+
+setInterval(() => {
+  var sel = document.getSelection();
+  var curr = sel.anchorNode &&
+    sel.anchorNode.parentElement.closest('.link');
+  if (prev === curr) { return; }
+  if (prev) { prev.classList.remove('active'); }
+  if (curr) { curr.classList.add('active'); }
+  prev = curr;
+}, 20);

@@ -273,20 +273,23 @@ pre:focus {
     font-weight: bold;
 }
 
-.cl-link-url:not(:hover) {
+.cl-link-url {
+    color: #cbcbcb;
+}
+
+.link:not(.active) .cl-link-url {
   font-size: 0;
 }
 
 .cl-link-url:before {
     content: '···';
-    color: #cbcbcb;
     font-size: 1.5rem;
     line-height: 1.5rem;
     font-weight: bold;
     cursor: pointer;
 }
 
-.cl-link-url:hover:before {
+.link.active .cl-link-url:before {
     content: '';
     display: none;
 }

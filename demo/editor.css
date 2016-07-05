@@ -143,17 +143,26 @@ pre:focus {
 .h1,
 .h11 {
     font-size: 2em;
+}
+
+.h1:not(.alt) {
     margin-left: -0.775em;
 }
 
 .h2,
 .h22 {
     font-size: 1.5em;
+}
+
+.h2:not(.alt) {
     margin-left: -1.292em;
 }
 
 .h3 {
     font-size: 1.17em;
+}
+
+.h3:not(.alt) {
     margin-left: -1.835em;
 }
 

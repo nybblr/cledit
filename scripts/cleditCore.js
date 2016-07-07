@@ -29,6 +29,7 @@
     }
 
     var lastTextContent = getTextContent()
+    var lastTextContentExt = getTextContent()
     var highlighter = new cledit.Highlighter(editor)
 
     var sectionList
@@ -42,6 +43,15 @@
     // Used to detect editor changes
     var watcher = new cledit.Watcher(editor, checkContentChange)
     watcher.startWatching()
+
+    var watcherExt = new cledit.Watcher(editor, triggerContentChange)
+    watcherExt.startWatching()
+
+    function noWatch (cb) {
+      watcher.noWatch(() => {
+        watcherExt.noWatch(cb);
+      })
+    }
 
     /* eslint-disable new-cap */
     var diffMatchPatch = new window.diff_match_patch()
@@ -143,7 +153,7 @@
     }, 10)
 
     function checkContentChange (mutations) {
-      watcher.noWatch(function () {
+      noWatch(function () {
         var removedSections = []
         var modifiedSections = []
 
@@ -185,6 +195,14 @@
       triggerSpellCheck()
     }
 
+    function triggerContentChange (mutations) {
+      var newTextContent = getTextContent()
+      var diffs = diffMatchPatch.diff_main(lastTextContentExt, newTextContent)
+      var sectionList = parseSections(newTextContent)
+      editor.$trigger('contentChangedExt', newTextContent, diffs, sectionList)
+      lastTextContentExt = newTextContent
+    }
+
     function setSelection (start, end) {
       end = end === undefined ? start : end
       selectionMgr.setSelectionStartEnd(start, end)
@@ -207,6 +225,7 @@
     function tryDestroy () {
       if (!editor.$window.document.contains(contentElt)) {
         watcher.stopWatching()
+        watcherExt.stopWatching()
         editor.$window.removeEventListener('keydown', windowKeydownListener)
         editor.$window.removeEventListener('mouseup', windowMouseupListener)
         editor.$trigger('destroy')
@@ -319,6 +338,7 @@
     editor.undoMgr = undoMgr
     editor.highlighter = highlighter
     editor.watcher = watcher
+    editor.watcherExt = watcherExt
     editor.adjustCursorPosition = adjustCursorPosition
     editor.setContent = setContent
     editor.replace = replace

@@ -29,7 +29,7 @@
     }
 
     var lastTextContent = getTextContent()
-    var lastTextContentExt = getTextContent()
+    var lastTextContentExt = lastTextContent
     var highlighter = new cledit.Highlighter(editor)
 
     var sectionList
@@ -198,8 +198,10 @@
     function triggerContentChange (mutations) {
       var newTextContent = getTextContent()
       var diffs = diffMatchPatch.diff_main(lastTextContentExt, newTextContent)
-      var sectionList = parseSections(newTextContent)
-      editor.$trigger('contentChangedExt', newTextContent, diffs, sectionList)
+      // highlighter.isComposing++
+      // var sectionList = parseSections(newTextContent)
+      // highlighter.isComposing--
+      editor.$trigger('contentChangedExt', newTextContent, diffs, [])
       lastTextContentExt = newTextContent
     }
 
@@ -369,6 +371,7 @@
 
       var sectionList = parseSections(lastTextContent, true)
       editor.$trigger('contentChanged', lastTextContent, [0, lastTextContent], sectionList)
+      editor.$trigger('contentChangedExt', lastTextContent, [0, lastTextContent], sectionList)
       if (options.selectionStart !== undefined && options.selectionEnd !== undefined) {
         editor.setSelection(options.selectionStart, options.selectionEnd)
       } else {

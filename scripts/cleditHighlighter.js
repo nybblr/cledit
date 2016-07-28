@@ -134,7 +134,7 @@
         highlight(section)
         newSectionEltList.appendChild(section.elt)
       })
-      editor.watcher.noWatch(function () {
+      editor.noWatch(function () {
         if (isInit) {
           contentElt.innerHTML = ''
           contentElt.appendChild(newSectionEltList)

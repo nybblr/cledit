@@ -41,7 +41,16 @@
 
     // Used to detect editor changes
     var watcher = new cledit.Watcher(editor, checkContentChange)
+    var watcherExt = new cledit.Watcher(editor, triggerContentChange)
+
+    watcherExt.startWatching()
     watcher.startWatching()
+
+    function noWatch (cb) {
+      watcher.noWatch(() => {
+        watcherExt.noWatch(cb);
+      })
+    }
 
     /* eslint-disable new-cap */
     var diffMatchPatch = new window.diff_match_patch()
@@ -143,7 +152,7 @@
     }, 10)
 
     function checkContentChange (mutations) {
-      watcher.noWatch(function () {
+      noWatch(function () {
         var removedSections = []
         var modifiedSections = []
 
@@ -185,6 +194,15 @@
       triggerSpellCheck()
     }
 
+    function triggerContentChange (mutations) {
+      var newTextContent = getTextContent()
+      var diffs = diffMatchPatch.diff_main(lastTextContent, newTextContent)
+      highlighter.isComposing++
+      var sectionList = parseSections(newTextContent)
+      highlighter.isComposing--
+      editor.$trigger('contentChangedExt', newTextContent, diffs, sectionList)
+    }
+
     function setSelection (start, end) {
       end = end === undefined ? start : end
       selectionMgr.setSelectionStartEnd(start, end)
@@ -207,6 +225,7 @@
     function tryDestroy () {
       if (!editor.$window.document.contains(contentElt)) {
         watcher.stopWatching()
+        watcherExt.stopWatching()
         editor.$window.removeEventListener('keydown', windowKeydownListener)
         editor.$window.removeEventListener('mouseup', windowMouseupListener)
         editor.$trigger('destroy')
@@ -319,6 +338,8 @@
     editor.undoMgr = undoMgr
     editor.highlighter = highlighter
     editor.watcher = watcher
+    editor.watcherExt = watcherExt
+    editor.noWatch = noWatch
     editor.adjustCursorPosition = adjustCursorPosition
     editor.setContent = setContent
     editor.replace = replace
@@ -349,6 +370,7 @@
 
       var sectionList = parseSections(lastTextContent, true)
       editor.$trigger('contentChanged', lastTextContent, [0, lastTextContent], sectionList)
+      editor.$trigger('contentChangedExt', lastTextContent, [0, lastTextContent], sectionList)
       if (options.selectionStart !== undefined && options.selectionEnd !== undefined) {
         editor.setSelection(options.selectionStart, options.selectionEnd)
       } else {

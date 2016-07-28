@@ -41,7 +41,7 @@
 
     // Used to detect editor changes
     var watcher = new cledit.Watcher(editor, checkContentChange)
-    var watcherExt = new cledit.Watcher(editor, triggerContentChange)
+    var watcherExt = new cledit.Watcher(editor, checkContentChangeExt)
 
     watcherExt.startWatching()
     watcher.startWatching()
@@ -151,7 +151,7 @@
       }
     }, 10)
 
-    function checkContentChange (mutations) {
+    function fixupSections(mutations) {
       noWatch(function () {
         var removedSections = []
         var modifiedSections = []
@@ -174,7 +174,18 @@
         highlighter.fixContent(modifiedSections, removedSections, noContentFix)
         noContentFix = false
       })
+    }
 
+    var runChangedExt = false;
+    function resetChangedExt() {
+      runChangedExt = false;
+    }
+
+    function checkContentChangeExt (mutations) {
+      runChangedExt = true;
+    }
+
+    function changed(mutations) {
       var newTextContent = getTextContent()
       var diffs = diffMatchPatch.diff_main(lastTextContent, newTextContent)
       editor.$markers.cl_each(function (marker) {
@@ -184,6 +195,9 @@
       selectionMgr.saveSelectionState()
       var sectionList = parseSections(newTextContent)
       editor.$trigger('contentChanged', newTextContent, diffs, sectionList)
+      if (runChangedExt) {
+        editor.$trigger('contentChangedExt', newTextContent, diffs, sectionList)
+      }
       if (!ignoreUndo) {
         undoMgr.addDiffs(lastTextContent, newTextContent, diffs)
         undoMgr.setDefaultMode('typing')
@@ -194,13 +208,12 @@
       triggerSpellCheck()
     }
 
-    function triggerContentChange (mutations) {
-      var newTextContent = getTextContent()
-      var diffs = diffMatchPatch.diff_main(lastTextContent, newTextContent)
-      highlighter.isComposing++
-      var sectionList = parseSections(newTextContent)
-      highlighter.isComposing--
-      editor.$trigger('contentChangedExt', newTextContent, diffs, sectionList)
+    function checkContentChange (mutations) {
+      fixupSections(mutations);
+
+      changed(mutations);
+
+      resetChangedExt()
     }
 
     function setSelection (start, end) {

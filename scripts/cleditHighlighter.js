@@ -32,6 +32,10 @@
       modifiedSections.cl_each(function (section) {
         section.forceHighlighting = true
         if (!noContentFix) {
+          if (section.elt.textContent === '') {
+            section.elt.remove();
+            return;
+          }
           if (useBr) {
             section.elt.getElementsByClassName('hd-lf').cl_each(function (lfElt) {
               lfElt.parentNode.removeChild(lfElt)

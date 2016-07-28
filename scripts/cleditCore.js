@@ -57,6 +57,32 @@
     /* eslint-enable new-cap */
     var selectionMgr = new cledit.SelectionMgr(editor)
 
+    function differ(a, b) {
+      var suffixLength = diffMatchPatch.diff_commonSuffix(a, b)
+      var prefixLength = diffMatchPatch.diff_commonPrefix(a, b)
+
+      suffixLength = Math.min(
+        suffixLength,
+        a.length - prefixLength,
+        b.length - prefixLength
+      )
+
+      var prefix = a.slice(0, prefixLength)
+      var suffix = suffixLength ? a.slice(-suffixLength) : ''
+
+      var aOnly  = a.slice(prefixLength, -suffixLength || undefined)
+      var bOnly  = b.slice(prefixLength, -suffixLength || undefined)
+
+      return [
+        [0, prefix],
+        [-1, aOnly],
+        [1, bOnly],
+        [0, suffix]
+      ].filter(([op, text]) => !!text.length);
+    }
+
+    window.differ = differ;
+
     function adjustCursorPosition (force) {
       selectionMgr.saveSelectionState(true, true, force)
     }
@@ -187,7 +213,7 @@
 
     function changed(mutations) {
       var newTextContent = getTextContent()
-      var diffs = diffMatchPatch.diff_main(lastTextContent, newTextContent)
+      var diffs = differ(lastTextContent, newTextContent)
       editor.$markers.cl_each(function (marker) {
         marker.adjustOffset(diffs)
       })

@@ -12,6 +12,26 @@
     cledit.Utils.createEventHooks(editor)
     var debounce = cledit.Utils.debounce
 
+    function getScrollTop() {
+      return scrollElt.scrollTop || scrollElt.scrollY;
+    }
+
+    function setScrollTop(y) {
+      if (scrollElt === window) {
+        scrollElt.scrollTo(0, y);
+      } else {
+        scrollElt.scrollTop = y;
+      }
+    }
+
+    function getScrollHeight() {
+      return scrollElt.clientHeight || scrollElt.innerHeight;
+    }
+
+    editor.getScrollTop = getScrollTop
+    editor.setScrollTop = setScrollTop
+    editor.getScrollHeight = getScrollHeight
+
     editor.toggleEditable = function (isEditable) {
       if (isEditable === undefined) {
         isEditable = !contentElt.contentEditable
@@ -419,7 +439,7 @@
       undoMgr.init(options)
 
       if (options.scrollTop !== undefined) {
-        scrollElt.scrollTop = options.scrollTop
+        setScrollTop(options.scrollTop)
       }
     }
 

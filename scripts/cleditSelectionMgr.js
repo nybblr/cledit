@@ -3,8 +3,11 @@
   function SelectionMgr (editor) {
     var debounce = cledit.Utils.debounce
     var contentElt = editor.$contentElt
-    var scrollElt = editor.$scrollElt
     cledit.Utils.createEventHooks(this)
+
+    var getScrollTop = editor.getScrollTop
+    var setScrollTop = editor.setScrollTop
+    var getScrollHeight = editor.getScrollHeight
 
     var self = this
     var lastSelectionStart = 0
@@ -52,16 +55,16 @@
       }
       if (adjustScroll) {
         var adjustTop, adjustBottom
-        adjustTop = adjustBottom = scrollElt.clientHeight / 2 * editor.options.cursorFocusRatio
+        adjustTop = adjustBottom = getScrollHeight() / 2 * editor.options.cursorFocusRatio
         adjustTop = this.adjustTop || adjustTop
         adjustBottom = this.adjustBottom || adjustTop
         if (adjustTop && adjustBottom) {
-          var cursorMinY = scrollElt.scrollTop + adjustTop
-          var cursorMaxY = scrollElt.scrollTop + scrollElt.clientHeight - adjustBottom
+          var cursorMinY = getScrollTop() + adjustTop
+          var cursorMaxY = getScrollTop() + getScrollHeight() - adjustBottom
           if (this.cursorCoordinates.top < cursorMinY) {
-            scrollElt.scrollTop += this.cursorCoordinates.top - cursorMinY
+            setScrollTop(getScrollTop() + this.cursorCoordinates.top - cursorMinY)
           } else if (this.cursorCoordinates.top + this.cursorCoordinates.height > cursorMaxY) {
-            scrollElt.scrollTop += this.cursorCoordinates.top + this.cursorCoordinates.height - cursorMaxY
+            setScrollTop(getScrollTop() + this.cursorCoordinates.top + this.cursorCoordinates.height - cursorMaxY)
           }
         }
       }

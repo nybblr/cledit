@@ -31,6 +31,23 @@ editor.init({
   }
 })
 
+editor.on('contentChangedExt', (_, diffs) => {
+  console.log(diffs)
+  console.log(diffsToDiff(diffs));
+})
+
+var signs = {
+  "-1": '-',
+  "0": ' ',
+  "1": '+'
+};
+
+var diffsToDiff = (diffs) =>
+  diffs.map(([type, text]) => {
+    var sign = signs[type];
+    return text.split('\n').map(line => sign + line).join('\n');
+  }).join('\n');
+
 var prev;
 document.addEventListener('selectionchange', event => {
   var sel = document.getSelection();

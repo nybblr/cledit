@@ -1,17 +1,14 @@
 body {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  overflow: auto;
+
   font-size: 20px;
   background-color: #282828;
   margin: 0;
-}
-
-.scroller {
-    /* position: absolute; */
-    /* top: 0; */
-    /* right: 0; */
-    /* bottom: 0; */
-    /* left: 0; */
-    /* overflow: auto; */
-    /* background-color: #282828; */
 }
 
 .content {

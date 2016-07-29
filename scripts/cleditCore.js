@@ -149,22 +149,24 @@
       }
     }
 
-    function replace (selectionStart, selectionEnd, replacement) {
+    function replace (selectionStart, selectionEnd, replacement, autoScroll) {
+      if (autoScroll == null) { autoScroll = true; }
       undoMgr.setDefaultMode('single')
       replaceContent(selectionStart, selectionEnd, replacement)
       var endOffset = selectionStart + replacement.length
       selectionMgr.setSelectionStartEnd(endOffset, endOffset)
-      selectionMgr.updateCursorCoordinates(true)
+      selectionMgr.updateCursorCoordinates(autoScroll)
     }
 
-    function replaceAll (search, replacement) {
+    function replaceAll (search, replacement, autoScroll) {
+      if (autoScroll == null) { autoScroll = true; }
       undoMgr.setDefaultMode('single')
       var textContent = getTextContent()
       var value = textContent.replace(search, replacement)
       if (value !== textContent) {
         var offset = editor.setContent(value)
         selectionMgr.setSelectionStartEnd(offset.end, offset.end)
-        selectionMgr.updateCursorCoordinates(true)
+        selectionMgr.updateCursorCoordinates(autoScroll)
       }
     }
 

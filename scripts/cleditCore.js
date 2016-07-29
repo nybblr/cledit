@@ -235,6 +235,7 @@
     }
 
     function checkContentChange (mutations) {
+      noContentFix = true
       fixupSections(mutations);
 
       changed(mutations);

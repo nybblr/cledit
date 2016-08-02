@@ -47,7 +47,7 @@ var diffsToDiff = (diffs) =>
   }).join('\n');
 
 var prev;
-document.addEventListener('selectionchange', event => {
+var run = event => {
   var sel = document.getSelection();
   var curr = sel.anchorNode &&
     sel.anchorNode.parentElement.closest('.link');
@@ -55,7 +55,10 @@ document.addEventListener('selectionchange', event => {
   if (prev) { prev.classList.remove('active'); }
   if (curr) { curr.classList.add('active'); }
   prev = curr;
-});
+};
+
+document.addEventListener('selectionchange', run);
+editor.on('contentChanged', run)
 
 // var body = document.body;
 // var div = document.createElement('div');

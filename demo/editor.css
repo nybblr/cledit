@@ -23,6 +23,22 @@ body {
     line-height: 1.5;
 }
 
+.img .preview {
+  max-width: 300px;
+  max-height: 300px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.img:not(.active) {
+  border: none;
+  font-size: 0;
+}
+
+.img.active .preview {
+  display: none;
+}
+
 pre:focus {
     outline: none;
 }

@@ -1,6 +1,29 @@
 var editor = window.cledit(
   document.querySelector('.content'), window
 )
+
+var $content = $(editor.$contentElt);
+$content.on('click', '.img .preview', (event) => {
+  var selection = window.getSelection();
+  var range = document.createRange();
+  range.selectNodeContents(event.target.closest('.img'));
+  selection.removeAllRanges();
+  selection.addRange(range);
+})
+
+var imgSrc;
+Prism.hooks.add('wrap', (env) => {
+  switch (env.type) {
+    case 'cl cl-src':
+      imgSrc = env.content;
+      break;
+    case 'img':
+      env.content += `<img class="preview" src="${imgSrc}">`
+      imgSrc = undefined;
+      break;
+  }
+});
+
 var prismGrammar = window.mdGrammar({
   fences: true,
   tables: true,
@@ -29,10 +52,10 @@ editor.init({
   }
 })
 
-editor.on('contentChangedExt', (_, diffs) => {
-  console.log(diffs)
-  console.log(diffsToDiff(diffs));
-})
+// editor.on('contentChangedExt', (_, diffs) => {
+//   console.log(diffs)
+//   console.log(diffsToDiff(diffs));
+// })
 
 var signs = {
   "-1": '-',
@@ -50,7 +73,7 @@ var prev;
 var run = event => {
   var sel = document.getSelection();
   var curr = sel.anchorNode &&
-    sel.anchorNode.parentElement.closest('.link');
+    sel.anchorNode.parentElement.closest('.link, .img');
   if (prev === curr) { return; }
   if (prev) { prev.classList.remove('active'); }
   if (curr) { curr.classList.add('active'); }
